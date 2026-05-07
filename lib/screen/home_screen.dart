@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String selectedKey = 'C';
+  bool isMinor = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomAppbar(onToggleTheme: widget.onToggleTheme),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 50.0),
-
+        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
         child: ListView(
           children: [
             Row(
@@ -41,11 +41,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            Center(
+              child: SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(value: false, label: Text('Major')),
+                  ButtonSegment(value: true, label: Text('Minor')),
+                ],
+                selected: {isMinor},
+                onSelectionChanged: (value) {
+                  setState(() {
+                    isMinor = value.first;
+                  });
+                },
+              ),
+            ),
             const SizedBox(height: 20),
-
-            KeyDegrees(note: selectedKey),
-
-            
+            KeyDegrees(note: selectedKey, isMinor: isMinor),
           ],
         ),
       ),
