@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
-        child: ListView(
+        child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            KeyDegrees(note: selectedKey, isMinor: isMinor),
+            Expanded(
+              child: KeyDegrees(note: selectedKey, isMinor: isMinor),
+            ),
           ],
         ),
       ),

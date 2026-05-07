@@ -12,31 +12,33 @@ class KeyDegrees extends StatelessWidget {
     final chords = Notes.buildChords(note, isMinor: isMinor);
     final chordNotes = Notes.buildChordNotes(note, isMinor: isMinor);
     final extensions = Notes.buildChordExtensions(note, isMinor: isMinor);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final buttonSize = (screenWidth * 0.15).clamp(50.0, 80.0);
-    final chordFontSize = (screenWidth * 0.04).clamp(13.0, 18.0);
-    final notesFontSize = (screenWidth * 0.027).clamp(10.0, 14.0);
-    final chipFontSize = (screenWidth * 0.024).clamp(9.0, 12.0);
     final colorScheme = Theme.of(context).colorScheme;
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        // constraints.maxHeight is exactly what's left after the header (Expanded gives us this)
+        // 7 rows × 8px vertical padding = 56px total padding
+        final rowHeight = (constraints.maxHeight - 56) / 7;
+        final buttonSize = rowHeight.clamp(40.0, 80.0);
+        final chordFontSize = (rowHeight * 0.22).clamp(11.0, 18.0);
+        final notesFontSize = (rowHeight * 0.15).clamp(9.0, 14.0);
+        final chipFontSize = (rowHeight * 0.13).clamp(8.0, 12.0);
         return Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: constraints.maxWidth > 500 ? 500 : double.infinity),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 20),
                 ...List.generate(7, (index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: SizedBox(
+                      height: rowHeight,
+                      child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(
                           width: buttonSize,
-                          height: buttonSize,
                           child: FilledButton(
                             style: FilledButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -55,14 +57,15 @@ class KeyDegrees extends StatelessWidget {
                         Expanded(
                           child: FilledButton.tonal(
                             style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4),
                               ),
                             ),
                             onPressed: () {},
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 FittedBox(
                                   fit: BoxFit.scaleDown,
@@ -80,7 +83,7 @@ class KeyDegrees extends StatelessWidget {
                                   style: TextStyle(fontSize: notesFontSize),
                                   textAlign: TextAlign.center,
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 2),
                                 Wrap(
                                   alignment: WrapAlignment.center,
                                   spacing: 4,
@@ -111,6 +114,7 @@ class KeyDegrees extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
                     ),
                   );
                 }),
