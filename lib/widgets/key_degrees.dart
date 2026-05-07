@@ -11,6 +11,13 @@ class KeyDegrees extends StatelessWidget {
   Widget build(BuildContext context) {
     final chords = Notes.buildChords(note, isMinor: isMinor);
     final chordNotes = Notes.buildChordNotes(note, isMinor: isMinor);
+    final extensions = Notes.buildChordExtensions(note, isMinor: isMinor);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonSize = (screenWidth * 0.15).clamp(50.0, 80.0);
+    final chordFontSize = (screenWidth * 0.04).clamp(13.0, 18.0);
+    final notesFontSize = (screenWidth * 0.027).clamp(10.0, 14.0);
+    final chipFontSize = (screenWidth * 0.024).clamp(9.0, 12.0);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -25,10 +32,11 @@ class KeyDegrees extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 70,
-                          height: 70,
+                          width: buttonSize,
+                          height: buttonSize,
                           child: FilledButton(
                             style: FilledButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -37,7 +45,10 @@ class KeyDegrees extends StatelessWidget {
                               ),
                             ),
                             onPressed: () {},
-                            child: Text('${index + 1}'),
+                            child: Text(
+                              '${index + 1}',
+                              style: TextStyle(fontSize: chordFontSize),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -51,16 +62,49 @@ class KeyDegrees extends StatelessWidget {
                             ),
                             onPressed: () {},
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
-                                  chords[index],
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    chords[index],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: chordFontSize,
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   chordNotes[index],
-                                  style: const TextStyle(fontSize: 11),
+                                  style: TextStyle(fontSize: notesFontSize),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 6),
+                                Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 4,
+                                  runSpacing: 4,
+                                  children: extensions[index].map((ext) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: colorScheme.surface.withAlpha(180),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: colorScheme.outline.withAlpha(100),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        ext,
+                                        style: TextStyle(
+                                          fontSize: chipFontSize,
+                                          color: colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               ],
                             ),

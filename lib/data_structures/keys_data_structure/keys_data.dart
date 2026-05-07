@@ -7,7 +7,10 @@ class Notes {
     'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
   ];
 
-  static bool useSharps(String key) {
+  static bool useSharps(String key, {bool isMinor = false}) {
+    if (isMinor) {
+      return ['A', 'E', 'B'].contains(key);
+    }
     return ['C', 'D', 'E', 'G', 'A', 'B'].contains(key);
   }
 
@@ -32,7 +35,7 @@ class Notes {
   }
 
   static List<String> returnDegree(String selectedKey, {bool isMinor = false}) {
-    final notes = useSharps(selectedKey) ? notesSharps : notesFlats;
+    final notes = useSharps(selectedKey, isMinor: isMinor) ? notesSharps : notesFlats;
     final root = notes.indexOf(selectedKey);
     final intervals = isMinor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11];
     final degrees = intervals.map((interval) => (root + interval) % 12).toList();
@@ -54,7 +57,7 @@ class Notes {
   }
 
   static List<String> buildChordNotes(String selectedKey, {bool isMinor = false}) {
-    final noteSet = useSharps(selectedKey) ? notesSharps : notesFlats;
+    final noteSet = useSharps(selectedKey, isMinor: isMinor) ? notesSharps : notesFlats;
     final degrees = returnDegree(selectedKey, isMinor: isMinor);
     final List<String> result = [];
 
@@ -86,5 +89,32 @@ class Notes {
     }
 
     return result;
+  }
+
+  static List<List<String>> buildChordExtensions(String selectedKey, {bool isMinor = false}) {
+    final degrees = returnDegree(selectedKey, isMinor: isMinor);
+    final r = degrees; // shorthand
+
+    if (isMinor) {
+      return [
+        ['${r[0]}m7', '${r[0]}madd9', '${r[0]}m(maj7)'],
+        ['${r[1]}m7b5'],
+        ['${r[2]}maj7', '${r[2]}add9'],
+        ['${r[3]}m7', '${r[3]}madd9'],
+        ['${r[4]}m7', '${r[4]}7', r[4]],
+        ['${r[5]}maj7', '${r[5]}add9'],
+        ['${r[6]}add9'],
+      ];
+    } else {
+      return [
+        ['${r[0]}add9', '${r[0]}maj7'],
+        ['${r[1]}m7', '${r[1]}m9'],
+        ['${r[2]}m7'],
+        ['${r[3]}add9', '${r[3]}sus2', '${r[3]}maj7'],
+        ['${r[4]}add9', '${r[4]}sus4', '${r[4]}7', '${r[4]}add4'],
+        ['${r[5]}m7', '${r[5]}m9'],
+        ['${r[6]}m7b5'],
+      ];
+    }
   }
 }
